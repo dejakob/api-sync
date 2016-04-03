@@ -64,14 +64,3 @@ Api calls will be like:
 | 0s   |        |       |       |
 | 3s   | POST   | /todo | content=Do%20%the%20laundry&title=new%20todo! |
 | 6s   | POST   | /user | name=dejakob |
-
-
-```
-
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
-
-```
