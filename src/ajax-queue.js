@@ -93,7 +93,7 @@ class AjaxQueue
             }
 
             delete this._queue[queueKey];
-            queueKeys = queueKeys.splice(0, 1);
+            queueKeys.splice(0, 1);
 
             this._isWaiting = false;
             _again.call(this);
@@ -107,7 +107,7 @@ class AjaxQueue
             this._failedQueue[queueKey] = this._queue[queueKey];
 
             delete this._queue[queueKey];
-            queueKeys = queueKeys.splice(0, 1);
+            queueKeys.splice(0, 1);
 
             this._isWaiting = false;
             _again.call(this);
