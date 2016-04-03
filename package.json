@@ -2,7 +2,7 @@
   "name": "api-sync",
   "version": "1.0.0",
   "description": "Sync all of your data with an API, no more race conditions or issues when internet connection breaks",
-  "main": "index.js",
+  "main": "dist/script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
