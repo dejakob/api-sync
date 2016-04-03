@@ -1,4 +1,7 @@
 # API Sync
+<a href="https://codeclimate.com/github/dejakob/api-sync"><img src="https://codeclimate.com/github/dejakob/api-sync/badges/gpa.svg" /></a>
+<a href="https://codeclimate.com/github/dejakob/api-sync/coverage"><img src="https://codeclimate.com/github/dejakob/api-sync/badges/coverage.svg" /></a>
+<a href="https://codeclimate.com/github/dejakob/api-sync"><img src="https://codeclimate.com/github/dejakob/api-sync/badges/issue_count.svg" /></a>
 
 ## Install
 ```
