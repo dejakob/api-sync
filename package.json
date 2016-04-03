@@ -9,11 +9,14 @@
   "author": "dejakob",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^3.5.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.0",
-    "chai": "^3.5.0",
-    "mocha": "^2.4.5"
+    "jsdom": "^8.2.0",
+    "mocha": "^2.4.5",
+    "regenerator": "^0.8.42",
+    "sinon": "^1.17.3"
   },
   "dependencies": {
     "ajax-promise": "^0.8.1",
