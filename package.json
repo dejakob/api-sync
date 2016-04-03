@@ -4,14 +4,16 @@
   "description": "Sync all of your data with an API, no more race conditions or issues when internet connection breaks",
   "main": "dist/script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "_mocha spec/**/*.spec.js --compilers js:babel-core/register"
   },
   "author": "dejakob",
   "license": "MIT",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
-    "gulp-concat": "^2.6.0"
+    "gulp-concat": "^2.6.0",
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
   },
   "dependencies": {
     "ajax-promise": "^0.8.1",
