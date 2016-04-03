@@ -6,12 +6,13 @@
   "scripts": {
     "test": "npm run test:mocha && npm run test:coverage",
     "test:mocha": "_mocha spec/**/*.spec.js --compilers js:babel-core/register",
-    "test:coverage": "./test/coverage.sh"
+    "test:coverage": "babel-node node_modules/.bin/babel-istanbul cover --dir coverage/coverage _mocha spec/**/*.spec.js --compilers node_modules/babel-core/register"
   },
   "author": "dejakob",
   "license": "MIT",
   "devDependencies": {
     "babel": "^6.5.2",
+    "babel-cli": "^6.6.5",
     "babel-core": "^6.7.4",
     "babel-istanbul": "^0.7.0",
     "chai": "^3.5.0",
