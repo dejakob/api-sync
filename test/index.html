@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test file</title>
+</head>
+<body>
+    <h1>Test file</h1>
+
+    <script src="../dist/script.js"></script>
+    <script>
+        ApiSync.add('POST', 'http://127.0.0.1:3003/categories', { abc: 123, def: 456, test: 7 });
+        ApiSync.add('POST', 'http://127.0.0.1:3003/categories', { abc: 123, def: 456, ghi: 789 });
+        ApiSync.add('POST', 'http://127.0.0.1:3003/', { abc: 123, def: 456, ghi: 789 });
+        ApiSync.add('POST', 'http://127.0.0.1:3003/ee', { abc: 123, def: 456, ghi: 789 });
+        ApiSync.add('POST', 'http://127.0.0.1:3003/ooo', { abc: 123, def: 456, ghi: 789 });
+        ApiSync.add('POST', 'http://127.0.0.1:3003/test', { abc: 123, def: 456, ghi: 789 });
+    </script>
+</body>
+</html>
