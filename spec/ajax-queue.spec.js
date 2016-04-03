@@ -42,4 +42,23 @@ describe('Ajax Queue', () => {
                 });
         });
     });
+
+    describe('remove method', () => {
+        it('should be defined', () => {
+            expect(ajaxQueue.remove).to.be.a('function');
+        });
+
+        it('should remove the items of the queue', () => {
+            const type = 'post';
+            const url = '/todo';
+            const data = {};
+            const options = {};
+
+            ajaxQueue.add(type, url, data);
+            ajaxQueue.remove(type, url);
+
+            expect(ajaxQueue._queue)
+                .to.eql({});
+        });
+    });
 });
