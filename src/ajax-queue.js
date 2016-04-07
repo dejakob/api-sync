@@ -1,4 +1,3 @@
-import Ajax from 'ajax-promise';
 import Helper from './helper';
 
 /**
@@ -28,10 +27,10 @@ class AjaxQueue
      *
      * @param {String} type
      * @param {String} url
-     * @param {Object} data
+     * @param {Object} [data]
      * @param {Object} [options]
      */
-    add (type, url, data, options = {}) {
+    add (type, url, data = {}, options = {}) {
         type = type.toLowerCase();
 
         const key = this._generateKey(type, url);
@@ -76,6 +75,7 @@ class AjaxQueue
     _run () {
         let queueKeys = Object.keys(this._queue);
         const queueKey = queueKeys[0];
+        const vm = this;
 
         if (!queueKey || !this._queue.hasOwnProperty(queueKey)) {
             throw new Error(`Queue key${queueKey} not found`);
@@ -83,9 +83,26 @@ class AjaxQueue
 
         const { type, url, data, options } = Helper.mergeRequests(this._queue[queueKey]);
 
-        return Ajax
-            .ajax(type, url, data)
-            .then(_onComplete.bind(this), _onFailed.bind(this));
+        // @TODO replace by GOOD ajax module
+        const httpRequest = new XMLHttpRequest();
+        httpRequest.open(type, url, true);
+        httpRequest.send(JSON.stringify(data));
+        httpRequest.onreadystatechange = () => {
+
+            // Status 4: done
+            if (httpRequest.readyState === 4) {
+
+                // Everything is allrigt
+                if (httpRequest.status === 200) {
+                    _onComplete.call(vm);
+                }
+                else {
+                    _onFailed.call(vm);
+                }
+            }
+        };
+
+        return httpRequest;
 
         function _onComplete (response) {
             if (typeof options.onComplete === 'function') {
