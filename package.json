@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm run test:mocha && npm run test:coverage",
     "test:mocha": "_mocha spec/**/*.spec.js --compilers js:babel-core/register",
-    "test:coverage": "babel-node node_modules/.bin/babel-istanbul cover --dir coverage/coverage _mocha spec/**/*.spec.js --compilers node_modules/babel-core/register"
+    "test:coverage": "babel-node node_modules/.bin/babel-istanbul cover --dir coverage/coverage _mocha spec/**/*.spec.js --compilers node_modules/babel-core/register",
+    "postinstall": "gulp && gulp"
   },
   "author": "dejakob",
   "license": "MIT",
