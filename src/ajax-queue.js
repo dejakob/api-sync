@@ -141,6 +141,8 @@ class AjaxQueue
                     errorDetails
                 });
             }
+
+            _next.call(this);
         }
 
         /**

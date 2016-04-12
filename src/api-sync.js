@@ -67,8 +67,8 @@ class ApiSync
     _onFailed (optionsKey, errorDetails) {
         const options = this._optionsStore[optionsKey];
 
-        if (options && typeof options.onComplete === 'function') {
-            options.onComplete(errorDetails, options);
+        if (options && typeof options.onFailed === 'function') {
+            options.onFailed(errorDetails, options);
         }
 
         delete this._optionsStore[optionsKey];

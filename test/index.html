@@ -13,11 +13,15 @@
         ApiSync.add('POST', 'http://127.0.0.1:3003/orders', { abc: 123, def: 456, ghi: 789 });
         ApiSync.add('GET', 'http://127.0.0.1:3003/personnel', { abc: 123, def: 456, ghi: 789 });
         ApiSync.add('POST', 'http://127.0.0.1:3003/categories', { test: 8, moreBullshit: true });
-        ApiSync.add('POST', 'http://127.0.0.1:3003/ooo', { abc: 123, def: 456, ghi: 789 });
+        ApiSync.add('POST', 'http://127.0.0.1:3003/ooo', { abc: 123, def: 456, ghi: 789 }, { onFailed: onFailed });
         ApiSync.add('POST', 'http://127.0.0.1:3003/test', { abc: 123, def: 456, ghi: 789 });
 
         function onComplete (data, options) {
             console.log('complete', data, options);
+        }
+
+        function onFailed (data, options) {
+            console.log('failed', data, options);
         }
     </script>
 </body>
