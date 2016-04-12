@@ -1,4 +1,5 @@
 import Helper from './helper';
+import ajax from '@fdaciuk/ajax';
 
 /**
  * Ajax Queue
@@ -82,31 +83,20 @@ class AjaxQueue
         }
 
         const { type, url, data, options } = Helper.mergeRequests(this._queue[queueKey]);
+        const method = type.toLowerCase();
+        const ajaxInstance = ajax();
 
-        // @TODO replace by GOOD ajax module
-        const httpRequest = new XMLHttpRequest();
-        httpRequest.open(type, url, true);
-        httpRequest.send(JSON.stringify(data));
-        httpRequest.onreadystatechange = () => {
+        if (!ajaxInstance.hasOwnProperty(method)) {
+            throw new Error(`${method} is not recognised as an ajax method type`);
+        }
 
-            // Status 4: done
-            if (httpRequest.readyState === 4) {
-
-                // Everything is allrigt
-                if (httpRequest.status === 200) {
-                    _onComplete.call(vm);
-                }
-                else {
-                    _onFailed.call(vm);
-                }
-            }
-        };
-
-        return httpRequest;
+        return ajaxInstance[method](url, data)
+            .then(_onComplete.bind(this))
+            .catch(_onFailed.bind(this));
 
         function _onComplete (response) {
             if (typeof options.onComplete === 'function') {
-                option.onComplete(response);
+                options.onComplete(response);
             }
 
             delete this._queue[queueKey];
