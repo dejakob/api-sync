@@ -15,7 +15,7 @@ class Helper {
             type: firstRequest.type,
             url: firstRequest.url,
             data: mergedData,
-            options: firstRequest.options
+            optionsKey: firstRequest.optionsKey
         }
     }
 }

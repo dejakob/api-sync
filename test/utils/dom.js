@@ -12,6 +12,7 @@ var win = doc.defaultView
 // natural in the test environment
 global.document = doc
 global.window = win
+global.Worker = {};
 
 win.localStorage = {
     getItem: () => {},

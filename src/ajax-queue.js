@@ -1,15 +1,26 @@
 import Helper from './helper';
 import ajax from '@fdaciuk/ajax';
+import { ACTION_TYPES } from './config';
 
 /**
  * Ajax Queue
  */
 class AjaxQueue
 {
+    /**
+     *
+     * @returns {Number}
+     * @constructor
+     */
     get TIMEOUT () {
         return this._TIMEOUT;
     }
 
+    /**
+     *
+     * @param {Number} val
+     * @constructor
+     */
     set TIMEOUT (val) {
         this._TIMEOUT = val;
     }
@@ -25,16 +36,16 @@ class AjaxQueue
     }
 
     /**
-     *
+     * Add a request to the queue
      * @param {String} type
      * @param {String} url
      * @param {Object} [data]
-     * @param {Object} [options]
+     * @param {String} [optionsKey]
      */
-    add (type, url, data = {}, options = {}) {
+    add (type, url, data = {}, optionsKey) {
         type = type.toLowerCase();
 
-        const key = this._generateKey(type, url);
+        const key = AjaxQueue._generateKey(type, url);
         const foundItemInQueue = this._queue[key];
 
         if (
@@ -44,17 +55,17 @@ class AjaxQueue
             this._queue[key] = [];
         }
 
-        this._queue[key].push({ type, url, data, options });
+        this._queue[key].push({ type, url, data, optionsKey });
         this._wait();
     }
 
     /**
-     *
+     * Remove all requests with a specified type and url from the queue
      * @param {String} type
      * @param {String} url
      */
     remove (type, url) {
-        const key = this._generateKey(type, url);
+        const key = AjaxQueue._generateKey(type, url);
         delete this._queue[key];
     }
 
@@ -64,25 +75,25 @@ class AjaxQueue
      * @returns {String}
      * @private
      */
-    _generateKey (type, url) {
+    static _generateKey (type, url) {
         return `${type}|${url}`;
     }
 
     /**
-     *
+     * Run the queue
      * @returns {Promise}
      * @private
      */
     _run () {
         let queueKeys = Object.keys(this._queue);
         const queueKey = queueKeys[0];
-        const vm = this;
 
         if (!queueKey || !this._queue.hasOwnProperty(queueKey)) {
             throw new Error(`Queue key${queueKey} not found`);
         }
 
-        const { type, url, data, options } = Helper.mergeRequests(this._queue[queueKey]);
+        const requestsBundle = Helper.mergeRequests(this._queue[queueKey]);
+        const { type, url, data, optionsKey } = requestsBundle;
         const method = type.toLowerCase();
         const ajaxInstance = ajax();
 
@@ -91,36 +102,52 @@ class AjaxQueue
         }
 
         return ajaxInstance[method](url, data)
-            .then(_onComplete.bind(this))
-            .catch(_onFailed.bind(this));
+            .then(_onComplete.bind(this, requestsBundle))
+            .catch(_onFailed.bind(this, requestsBundle));
 
-        function _onComplete (response) {
-            if (typeof options.onComplete === 'function') {
-                options.onComplete(response);
+        /**
+         * Sending a bundled request succeeded
+         * @param {Object} requestsBundle
+         * @param {Object} response
+         * @private
+         */
+        function _onComplete (requestsBundle, response) {
+            if (typeof requestsBundle.optionsKey === 'string') {
+                postMessage({
+                    action: ACTION_TYPES.ON_COMPLETE,
+                    optionsKey: requestsBundle.optionsKey,
+                    response
+                });
             }
 
             delete this._queue[queueKey];
             queueKeys.splice(0, 1);
 
             this._isWaiting = false;
-            _again.call(this);
+            _next.call(this);
         }
 
-        function _onFailed () {
-            if (typeof options.onFailed === 'function') {
-                option.onFailed();
+        /**
+         * Sending a bundled request failed
+         * @param {Object} requestsBundle
+         * @param {Object} errorDetails
+         * @private
+         */
+        function _onFailed (requestsBundle, errorDetails) {
+            if (typeof requestsBundle.optionsKey === 'string') {
+                postMessage({
+                    action: ACTION_TYPES.ON_FAILED,
+                    optionsKey: requestsBundle.optionsKey,
+                    errorDetails
+                });
             }
-
-            this._failedQueue[queueKey] = this._queue[queueKey];
-
-            delete this._queue[queueKey];
-            queueKeys.splice(0, 1);
-
-            this._isWaiting = false;
-            _again.call(this);
         }
 
-        function _again () {
+        /**
+         * Run the next item of the queue
+         * @private
+         */
+        function _next () {
             if (queueKeys.length > 0) {
                 this._wait();
             }
@@ -131,7 +158,7 @@ class AjaxQueue
     }
 
     /**
-     *
+     * Wait the timeout, then run
      * @private
      */
     _wait () {

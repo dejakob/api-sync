@@ -5,6 +5,7 @@ const ApiSyncWorker =
 {
     init () {
         ApiSyncWorker.ajaxQueue = new AjaxQueue();
+        ApiSyncWorker.postMessage = postMessage;
     },
 
     processIncomingMessage (message) {
@@ -12,8 +13,8 @@ const ApiSyncWorker =
             case ACTION_TYPES.SET_TIMEOUT:
                 return ApiSyncWorker._setTimeout(message.data.timeout);
             case ACTION_TYPES.ADD_ITEM_TO_QUEUE:
-                const { type, url, data, options } = message.data;
-                return ApiSyncWorker._addItemToQueue(type, url, data, options);
+                const { type, url, data, optionsKey } = message.data;
+                return ApiSyncWorker._addItemToQueue(type, url, data, optionsKey);
             case ACTION_TYPES.REMOVE_FROM_QUEUE:
                 return ApiSyncWorker._removeItemFromQueue(message.data.type, message.data.url);
         }
@@ -27,7 +28,7 @@ const ApiSyncWorker =
         ApiSyncWorker.ajaxQueue.TIMEOUT = timeout;
     },
 
-    _addItemToQueue (type, url, data, options) {
+    _addItemToQueue (type, url, data, optionsKey) {
         if (typeof type !== 'string') {
             ApiSyncWorker.logError('Request type should be a string');
         }
@@ -37,7 +38,7 @@ const ApiSyncWorker =
         }
 
         try {
-            ApiSyncWorker.ajaxQueue.add(type, url, data, options);
+            ApiSyncWorker.ajaxQueue.add(type, url, data, optionsKey);
         }
         catch (ex) {
             ApiSyncWorker.logError(ex.toString());
