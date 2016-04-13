@@ -12,12 +12,16 @@ var win = doc.defaultView
 // natural in the test environment
 global.document = doc
 global.window = win
-global.Worker = {};
+global.Worker = () => {};
 
 win.localStorage = {
     getItem: () => {},
     setItem: () => {}
 };
+
+win.URL = {
+    createObjectURL: () => {}
+}
 
 // take all properties of the window object and also attach it to the
 // mocha global object
