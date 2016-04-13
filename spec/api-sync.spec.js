@@ -5,9 +5,7 @@ import { assert, expect } from 'chai';
 import sinon from 'sinon';
 
 describe('Api Sync', () => {
-    before (() => {
-        sinon.stub(ApiSync.worker, 'postMessage').returns(() => {});
-    });
+    let sandbox = null;
 
     it('should be defined', () => {
         expect(ApiSync).to.be.a('object');
@@ -15,8 +13,14 @@ describe('Api Sync', () => {
 
     describe('add method', () => {
         before(() => {
-            sinon.stub(Date, 'now').returns('A');
-            sinon.stub(Math, 'random').returns('B');
+            sandbox = sinon.sandbox.create();
+            sandbox.stub(ApiSync.worker, 'postMessage').returns(() => {});
+            sandbox.stub(Date, 'now').returns('A');
+            sandbox.stub(Math, 'random').returns('B');
+        });
+
+        after (() => {
+            sandbox.restore();
         });
 
         it('should be defined', () => {
@@ -43,6 +47,15 @@ describe('Api Sync', () => {
     });
 
     describe('remove method', () => {
+        before(() => {
+            sandbox = sinon.sandbox.create();
+            sandbox.stub(ApiSync.worker, 'postMessage').returns(() => {});
+        });
+
+        after (() => {
+            sandbox.restore();
+        });
+
         it('should be defined', () => {
             expect(ApiSync.remove).to.be.a('function');
         });
@@ -53,7 +66,7 @@ describe('Api Sync', () => {
 
             ApiSync.remove(type, url);
 
-            expect(ApiSync.worker.postMessage.secondCall.args[0])
+            expect(ApiSync.worker.postMessage.firstCall.args[0])
                 .to.eql({
                     action: ACTION_TYPES.REMOVE_FROM_QUEUE,
                     type,
@@ -63,10 +76,19 @@ describe('Api Sync', () => {
     });
 
     describe('set timeout prop', () => {
+        before(() => {
+            sandbox = sinon.sandbox.create();
+            sandbox.stub(ApiSync.worker, 'postMessage').returns(() => {});
+        });
+
+        after (() => {
+            sandbox.restore();
+        });
+
         it('should post a message to the web worker', () => {
             ApiSync.timeout = 200;
 
-            expect(ApiSync.worker.postMessage.thirdCall.args[0])
+            expect(ApiSync.worker.postMessage.firstCall.args[0])
                 .to.eql({
                     action: ACTION_TYPES.SET_TIMEOUT,
                     timeout: 200
@@ -81,7 +103,12 @@ describe('Api Sync', () => {
 
         describe('when message action is LOG_ERROR', () => {
             before(() => {
-                sinon.stub(ApiSync, '_logError').returns(() => {});
+                sandbox = sinon.sandbox.create();
+                sandbox.stub(ApiSync, '_logError').returns(() => {});
+            });
+
+            after (() => {
+                sandbox.restore();
             });
 
             it('should call _logError with the errorMessage', () => {
@@ -100,7 +127,12 @@ describe('Api Sync', () => {
 
         describe('when message action is ON_COMPLETE', () => {
             before(() => {
-                sinon.stub(ApiSync, '_onComplete').returns(() => {});
+                sandbox = sinon.sandbox.create();
+                sandbox.stub(ApiSync, '_onComplete').returns(() => {});
+            });
+
+            after (() => {
+                sandbox.restore();
             });
 
             it('should call _logError with the errorMessage', () => {
@@ -120,7 +152,12 @@ describe('Api Sync', () => {
 
         describe('when message action is ON_FAILED', () => {
             before(() => {
-                sinon.stub(ApiSync, '_onFailed').returns(() => {});
+                sandbox = sinon.sandbox.create();
+                sandbox.stub(ApiSync, '_onFailed').returns(() => {});
+            });
+
+            after (() => {
+                sandbox.restore();
             });
 
             it('should call _logError with the errorMessage', () => {
@@ -138,4 +175,6 @@ describe('Api Sync', () => {
             });
         });
     });
+
+
 });
