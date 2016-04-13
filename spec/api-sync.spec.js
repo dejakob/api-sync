@@ -1,48 +1,76 @@
+import { ACTION_TYPES } from '../src/config';
 import ApiSync from '../src/api-sync';
 import AjaxQueue from '../src/ajax-queue';
 import { assert, expect } from 'chai';
 import sinon from 'sinon';
 
 describe('Api Sync', () => {
+    before (() => {
+        sinon.stub(ApiSync.worker, 'postMessage').returns(() => {});
+    });
+
     it('should be defined', () => {
-        expect(ApiSync).to.be.a('function');
+        expect(ApiSync).to.be.a('object');
     });
 
     describe('add method', () => {
         before(() => {
-            sinon.stub(AjaxQueue.prototype, 'add').returns(() => {});
+            sinon.stub(Date, 'now').returns('A');
+            sinon.stub(Math, 'random').returns('B');
         });
 
         it('should be defined', () => {
             expect(ApiSync.add).to.be.a('function');
         });
 
-        it('should proxy to AjaxQueue.add', () => {
-            const a = {};
-            ApiSync.add(a);
-            assert(AjaxQueue.prototype.add.calledWithMatch(a));
+        it('should post a message to the web worker', () => {
+            const type = 'post';
+            const url = '/test';
+            const data = {};
+            const options = {};
+
+            ApiSync.add(type, url, data, options);
+
+            expect(ApiSync.worker.postMessage.firstCall.args[0])
+                .to.eql({
+                    action: ACTION_TYPES.ADD_ITEM_TO_QUEUE,
+                    optionsKey: 'A-B',
+                    type,
+                    url,
+                    data
+                });
         });
     });
 
     describe('remove method', () => {
-        before(() => {
-            sinon.stub(AjaxQueue.prototype, 'remove').returns(() => {});
-        });
-
         it('should be defined', () => {
             expect(ApiSync.remove).to.be.a('function');
         });
 
-        it('should proxy to AjaxQueue.add', () => {
-            const a = {};
-            ApiSync.remove(a);
-            assert(AjaxQueue.prototype.remove.calledWithMatch(a));
+        it('should post a message to the web worker', () => {
+            const type = 'post';
+            const url = '/test';
+
+            ApiSync.remove(type, url);
+
+            expect(ApiSync.worker.postMessage.secondCall.args[0])
+                .to.eql({
+                    action: ACTION_TYPES.REMOVE_FROM_QUEUE,
+                    type,
+                    url
+                });
         });
     });
 
-    describe('timeout prop', () => {
-        it('should be defined', () => {
-            expect(ApiSync.timeout).to.be.a('number');
+    describe('set timeout prop', () => {
+        it('should post a message to the web worker', () => {
+            ApiSync.timeout = 200;
+
+            expect(ApiSync.worker.postMessage.thirdCall.args[0])
+                .to.eql({
+                    action: ACTION_TYPES.SET_TIMEOUT,
+                    timeout: 200
+                });
         });
     });
 });

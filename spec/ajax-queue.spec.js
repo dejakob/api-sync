@@ -23,7 +23,7 @@ describe('Ajax Queue', () => {
 
             expect(ajaxQueue._queue)
                 .to.eql({
-                    'post|/todo': [{ type, url, data, options }]
+                    'post|/todo': [{ type, url, data, optionsKey: undefined }]
                 });
         });
 
@@ -31,14 +31,14 @@ describe('Ajax Queue', () => {
             const type = 'post';
             const url = '/todo';
             const data = {};
-            const options = {};
+            const optionsKey = undefined;
 
             ajaxQueue.add(type, url, data);
             ajaxQueue.add(type, url, data);
 
             expect(ajaxQueue._queue)
                 .to.eql({
-                    'post|/todo': [{ type, url, data, options }, { type, url, data, options }]
+                    'post|/todo': [{ type, url, data, optionsKey }, { type, url, data, optionsKey }]
                 });
         });
     });

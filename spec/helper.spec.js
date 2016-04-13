@@ -51,13 +51,13 @@ describe('Helper', () => {
             });
         });
 
-        describe('options prop', () => {
-            it('should be the options of the first request', () => {
-                const request1 = { type: 'POST', url: '/todo', data: {}, options: { a: 222 } };
-                const request2 = { type: 'POST', url: '/todo', data: {}, options: { a: 333 } };
+        describe('optionsKey prop', () => {
+            it('should be the optionsKey of the first request', () => {
+                const request1 = { type: 'POST', url: '/todo', data: {}, optionsKey: 'first' };
+                const request2 = { type: 'POST', url: '/todo', data: {}, optionsKey: 'second' };
 
-                expect(Helper.mergeRequests([ request1, request2 ]).options)
-                    .to.equal(request1.options);
+                expect(Helper.mergeRequests([ request1, request2 ]).optionsKey)
+                    .to.equal('first');
             });
         });
     });
