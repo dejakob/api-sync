@@ -73,4 +73,69 @@ describe('Api Sync', () => {
                 });
         });
     });
+
+    describe('_processIncomingMessage method', () => {
+        it('should be defined', () => {
+            expect(ApiSync._processIncomingMessage).to.be.a('function');
+        });
+
+        describe('when message action is LOG_ERROR', () => {
+            before(() => {
+                sinon.stub(ApiSync, '_logError').returns(() => {});
+            });
+
+            it('should call _logError with the errorMessage', () => {
+                const action = ACTION_TYPES.LOG_ERROR;
+                const data = {
+                    action,
+                    errorMessage: 'ERROR'
+                };
+
+                ApiSync._processIncomingMessage({ data });
+
+                expect(ApiSync._logError.firstCall.args[0])
+                    .to.eql(data.errorMessage);
+            });
+        });
+
+        describe('when message action is ON_COMPLETE', () => {
+            before(() => {
+                sinon.stub(ApiSync, '_onComplete').returns(() => {});
+            });
+
+            it('should call _logError with the errorMessage', () => {
+                const action = ACTION_TYPES.ON_COMPLETE;
+                const data = {
+                    action,
+                    optionsKey: 'A-B',
+                    response: {}
+                };
+
+                ApiSync._processIncomingMessage({ data });
+
+                expect(ApiSync._onComplete.firstCall.args[0])
+                    .to.eql(data.optionsKey, data.response);
+            });
+        });
+
+        describe('when message action is ON_FAILED', () => {
+            before(() => {
+                sinon.stub(ApiSync, '_onFailed').returns(() => {});
+            });
+
+            it('should call _logError with the errorMessage', () => {
+                const action = ACTION_TYPES.ON_FAILED;
+                const data = {
+                    action,
+                    optionsKey: 'A-B',
+                    errorDetails: {}
+                };
+
+                ApiSync._processIncomingMessage({ data });
+
+                expect(ApiSync._onFailed.firstCall.args[0])
+                    .to.eql(data.optionsKey, data.errorDetails);
+            });
+        });
+    });
 });
