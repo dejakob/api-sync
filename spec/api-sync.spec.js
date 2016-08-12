@@ -176,50 +176,5 @@ describe('Api Sync', () => {
         });
     });
 
-    describe('_onComplete method', () => {
-        before(() => {
-            sandbox = sinon.sandbox.create();
-        });
 
-        after (() => {
-            sandbox.restore();
-        });
-
-        it('should be defined', () => {
-            expect(ApiSync._onComplete).to.be.a('function');
-        });
-
-        it('should call the onComplete option', () => {
-            const response = {};
-            const events = { onComplete: () => {} };
-
-            ApiSync._optionsStore = {
-                ABC: {
-                    onComplete: events.onComplete
-                }
-            };
-            sandbox
-                .stub(events, 'onComplete')
-                .returns(() => {});
-
-            ApiSync._onComplete('ABC', response);
-
-            expect(events.onComplete.firstCall.args[0])
-                .to.eql(response);
-            expect(events.onComplete.firstCall.args[1])
-                .to.eql(ApiSync._optionsStore['ABC']);
-        });
-    });
-
-    describe('_onFailed method', () => {
-        it('should be defined', () => {
-            expect(ApiSync._onFailed).to.be.a('function');
-        });
-    });
-
-    describe('_logError method', () => {
-        it('should be defined', () => {
-            expect(ApiSync._logError).to.be.a('function');
-        });
-    });
 });
