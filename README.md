@@ -67,3 +67,5 @@ Api calls will be like:
 | 0s   |        |       |       |
 | 3s   | POST   | /todo | content=Do%20%the%20laundry&title=new%20todo! |
 | 6s   | POST   | /user | name=dejakob |
+
+[![gitcheese.com](https://s3.amazonaws.com/gitcheese-ui-master/images/badge.svg)](https://www.gitcheese.com/donate/users/5782495/repos/55349715)
